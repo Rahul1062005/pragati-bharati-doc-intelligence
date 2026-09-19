@@ -4,6 +4,21 @@ A production-grade, scalable microservice built with **FastAPI**, **PostgreSQL**
 
 ---
 
+## 🌐 Live Deployment & Interactive Demo
+
+The service is deployed live on the cloud and ready for immediate evaluation:
+
+- **Live Web Application & Visual Reviewer**: [https://pragati-bharati-doc-intelligence.onrender.com](https://pragati-bharati-doc-intelligence.onrender.com)
+- **Live Interactive Swagger API Docs**: [https://pragati-bharati-doc-intelligence.onrender.com/docs](https://pragati-bharati-doc-intelligence.onrender.com/docs)
+- **Live ReDoc Documentation**: [https://pragati-bharati-doc-intelligence.onrender.com/redoc](https://pragati-bharati-doc-intelligence.onrender.com/redoc)
+
+> **Quick Demo Login Credentials**:
+> - **Email / Username**: `evaluator@pragatibharati.in`
+> - **Password**: `EvaluatorPassword123!`
+> *(Or click "⚡ One-Click Quick Demo User" on the dashboard)*
+
+---
+
 ## Key Highlights
 
 - **FastAPI Core**: High-performance asynchronous REST API with automatic OpenAPI / Swagger UI documentation.
