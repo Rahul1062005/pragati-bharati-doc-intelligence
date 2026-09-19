@@ -1,0 +1,53 @@
+[
+  {
+    "question_number": 1,
+    "question": "What is the time complexity of searching in a balanced Binary Search Tree?",
+    "options": [
+      "A) O(1)",
+      "B) O(log n)",
+      "C) O(n)",
+      "D) O(n log n)"
+    ],
+    "answer": "B",
+    "source_pages": [
+      1
+    ],
+    "confidence": 1.0,
+    "confidence_level": "CONFIDENT",
+    "review_reasons": []
+  },
+  {
+    "question_number": 2,
+    "question": "Which of the following HTTP status codes indicates 'Unauthorized'?",
+    "options": [
+      "A) 200 OK",
+      "B) 400 Bad Request",
+      "C) 401 Unauthorized",
+      "D) 404 Not Found"
+    ],
+    "answer": "C",
+    "source_pages": [
+      1
+    ],
+    "confidence": 1.0,
+    "confidence_level": "CONFIDENT",
+    "review_reasons": []
+  },
+  {
+    "question_number": 3,
+    "question": "In relational databases, ACID property 'I' stands for:",
+    "options": [
+      "A) Integrity",
+      "B) Isolation",
+      "C) Indexing",
+      "D) Iteration"
+    ],
+    "answer": "B",
+    "source_pages": [
+      1
+    ],
+    "confidence": 1.0,
+    "confidence_level": "CONFIDENT",
+    "review_reasons": []
+  }
+]

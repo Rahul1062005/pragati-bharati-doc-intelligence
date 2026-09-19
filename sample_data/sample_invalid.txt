@@ -1,0 +1,1 @@
+This is an unhandled plain text file intended to test 400 Bad Request error response.

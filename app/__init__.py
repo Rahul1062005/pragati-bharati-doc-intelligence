@@ -1,0 +1,4 @@
+"""
+Pragati Bharati - Document Intelligence & Question Extraction Service
+"""
+__version__ = "1.0.0"

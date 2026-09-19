@@ -1,0 +1,18 @@
+[
+  {
+    "question_number": null,
+    "question": "Document appears to be scanned or contains low-resolution image data. OCR review required.",
+    "options": [],
+    "answer": null,
+    "source_pages": [
+      1
+    ],
+    "confidence": 0.1,
+    "confidence_level": "NEEDS_REVIEW",
+    "review_reasons": [
+      "scanned_or_low_quality_document",
+      "low_ocr_confidence",
+      "unmatched_answer_key"
+    ]
+  }
+]

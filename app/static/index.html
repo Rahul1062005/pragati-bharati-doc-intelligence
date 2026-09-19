@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pragati Bharati - Document Intelligence & Question Extraction</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="app-container">
+    <!-- Navbar -->
+    <header class="navbar">
+      <div class="brand">
+        <div class="brand-logo">PB</div>
+        <div class="brand-text">
+          <h1>Pragati Bharati</h1>
+          <span class="subtext">Document Intelligence & Question Extraction</span>
+        </div>
+      </div>
+      <div class="nav-actions">
+        <a href="/docs" target="_blank" class="btn btn-secondary">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/><path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/></svg>
+          Swagger API Docs
+        </a>
+        <div id="authStatus" class="auth-status">
+          <span id="userBadge" class="badge badge-user">Not Logged In</span>
+          <button id="authBtn" class="btn btn-primary" onclick="openAuthModal()">Login / Register</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="main-layout">
+      <!-- Left Column: Upload & Document History -->
+      <section class="sidebar-panel">
+        <div class="card upload-card">
+          <div class="card-header">
+            <h3>Upload Examination Document</h3>
+            <span class="tag">PDF, PNG, JPG</span>
+          </div>
+          <form id="uploadForm" class="upload-form">
+            <div class="drop-zone" id="dropZone">
+              <div class="drop-icon">📄</div>
+              <p class="drop-title">Drag & drop files here</p>
+              <p class="drop-sub">or click to browse from device</p>
+              <input type="file" id="fileInput" accept=".pdf,.png,.jpg,.jpeg" required />
+            </div>
+
+            <div class="form-group">
+              <label for="docRole">Document Role</label>
+              <select id="docRole" class="form-select">
+                <option value="QUESTION_PAPER">Question Paper</option>
+                <option value="ANSWER_KEY">Standalone Answer Key</option>
+                <option value="COMBINED">Combined Paper & Key</option>
+              </select>
+            </div>
+
+            <div class="form-group" id="relateGroup" style="display:none;">
+              <label for="targetDocSelect">Link to Question Paper</label>
+              <select id="targetDocSelect" class="form-select">
+                <option value="">-- None --</option>
+              </select>
+            </div>
+
+            <button type="submit" id="submitUploadBtn" class="btn btn-accent full-width">
+              <span>Ingest & Extract Asynchronously</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Document List -->
+        <div class="card doc-list-card">
+          <div class="card-header">
+            <h3>Processed Documents</h3>
+            <button class="btn btn-sm btn-icon" onclick="loadDocuments()" title="Refresh">🔄</button>
+          </div>
+          <div class="doc-list" id="docListContainer">
+            <p class="empty-state">No documents uploaded yet.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Column: Live Processing Status & Questions Viewer -->
+      <section class="content-panel">
+        <!-- Live Status Bar -->
+        <div class="card status-card" id="statusCard" style="display:none;">
+          <div class="status-header">
+            <div>
+              <h4 id="activeDocTitle">Processing Document...</h4>
+              <span id="activeDocId" class="code-badge"></span>
+            </div>
+            <div id="activeDocBadge" class="status-pill status-pending">PENDING</div>
+          </div>
+          <div class="progress-container">
+            <div class="progress-bar" id="progressBar" style="width: 0%;"></div>
+          </div>
+          <div class="status-footer">
+            <span id="statusMessage">Initializing background task...</span>
+            <span id="progressText">0%</span>
+          </div>
+        </div>
+
+        <!-- Extraction Results View -->
+        <div class="card results-card" id="resultsCard">
+          <div class="card-header flex-between">
+            <div>
+              <h3>Extracted Question Bank</h3>
+              <p class="section-desc" id="resultsMeta">Select a completed document on the left to inspect questions.</p>
+            </div>
+            <div class="filter-actions" id="filterActions" style="display:none;">
+              <div class="btn-group">
+                <button class="btn btn-filter active" onclick="filterQuestions('ALL')">All (<span id="countAll">0</span>)</button>
+                <button class="btn btn-filter" onclick="filterQuestions('CONFIDENT')">Confident (<span id="countConfident">0</span>)</button>
+                <button class="btn btn-filter" onclick="filterQuestions('NEEDS_REVIEW')">Needs Review (<span id="countReview">0</span>)</button>
+              </div>
+              <button class="btn btn-secondary btn-sm" onclick="exportJson()">
+                📥 Export JSON
+              </button>
+            </div>
+          </div>
+
+          <div id="questionsContainer" class="questions-container">
+            <div class="placeholder-state">
+              <div class="placeholder-icon">🔍</div>
+              <h4>No Document Selected</h4>
+              <p>Upload a question paper or choose an existing document from the left list.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Auth Modal -->
+    <div class="modal" id="authModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="modalAuthTitle">Authentication</h3>
+          <button class="close-btn" onclick="closeAuthModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="tabs">
+            <button class="tab-btn active" onclick="switchAuthTab('login')">Login</button>
+            <button class="tab-btn" onclick="switchAuthTab('register')">Register</button>
+          </div>
+
+          <form id="authForm" onsubmit="handleAuthSubmit(event)">
+            <div class="form-group" id="usernameGroup" style="display:none;">
+              <label>Username</label>
+              <input type="text" id="authUsername" class="form-control" placeholder="johndoe" />
+            </div>
+            <div class="form-group">
+              <label>Email Address</label>
+              <input type="email" id="authEmail" class="form-control" placeholder="user@pragatibharati.in" required />
+            </div>
+            <div class="form-group">
+              <label>Password</label>
+              <input type="password" id="authPassword" class="form-control" placeholder="••••••••" required />
+            </div>
+            <div class="quick-demo-login">
+              <button type="button" class="btn btn-sm btn-outline full-width" onclick="fillQuickDemoUser()">
+                ⚡ One-Click Quick Demo User
+              </button>
+            </div>
+            <button type="submit" id="authSubmitBtn" class="btn btn-primary full-width mt-3">Login</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Page Preview Modal -->
+    <div class="modal" id="previewModal">
+      <div class="modal-content modal-lg">
+        <div class="modal-header">
+          <h3 id="previewTitle">Source Document Page</h3>
+          <button class="close-btn" onclick="closePreviewModal()">&times;</button>
+        </div>
+        <div class="modal-body text-center">
+          <img id="previewImage" src="" alt="Page Preview" class="preview-img" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

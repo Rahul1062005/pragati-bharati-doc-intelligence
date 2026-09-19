@@ -1,0 +1,56 @@
+[
+  {
+    "question_number": 1,
+    "question": "Which protocol is primarily used for secure web browsing?",
+    "options": [
+      "A) HTTP",
+      "B) HTTPS",
+      "C) FTP",
+      "D) SMTP"
+    ],
+    "answer": "B",
+    "source_pages": [
+      1
+    ],
+    "confidence": 1.0,
+    "confidence_level": "CONFIDENT",
+    "review_reasons": []
+  },
+  {
+    "question_number": 2,
+    "question": "Consider a distributed message queue like Redis or Celery. When a worker crashes during task execution, which acknowledgment mechanism guarantees at-least-once delivery?",
+    "options": [
+      "A) Fire and forget without acknowledgment",
+      "B) Automatic ack before task start",
+      "C) Explicit consumer ACK upon successful task completion",
+      "D) Decreasing queue timeout to zero"
+    ],
+    "answer": "C",
+    "source_pages": [
+      1,
+      2
+    ],
+    "confidence": 0.9,
+    "confidence_level": "PARTIAL",
+    "review_reasons": [
+      "split_across_pages"
+    ]
+  },
+  {
+    "question_number": 3,
+    "question": "What is the default port for PostgreSQL server?",
+    "options": [
+      "A) 3306",
+      "B) 6379",
+      "C) 5432",
+      "D) 8080"
+    ],
+    "answer": "B",
+    "source_pages": [
+      2
+    ],
+    "confidence": 1.0,
+    "confidence_level": "CONFIDENT",
+    "review_reasons": []
+  }
+]
