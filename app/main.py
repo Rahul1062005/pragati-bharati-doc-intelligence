@@ -15,6 +15,62 @@ from app.workers.queue import task_queue
 async def lifespan(app: FastAPI):
     # Initialize database tables
     init_db()
+    
+    # Auto-seed demo evaluator account and sample documents on startup
+    from app.core.database import SessionLocal
+    from app.core.security import hash_password
+    from app.models.user import User
+    from app.models.document import Document, DocumentStatus, DocumentType, DocumentRole
+    from app.services.question_service import question_service
+    from generate_samples import generate_sample_documents
+
+    # Ensure sample test documents exist on disk
+    if not os.path.exists("sample_data/sample_clean_exam.pdf"):
+        try:
+            generate_sample_documents()
+        except Exception as e:
+            print("Sample generation warning:", e)
+
+    db = SessionLocal()
+    try:
+        demo_email = "evaluator@pragatibharati.in"
+        user = db.query(User).filter(User.email == demo_email).first()
+        if not user:
+            user = User(
+                email=demo_email,
+                username="evaluator",
+                hashed_password=hash_password("EvaluatorPassword123!")
+            )
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+
+        # Pre-populate sample documents if user has none
+        doc_count = db.query(Document).filter(Document.user_id == user.id).count()
+        if doc_count == 0:
+            for filename in ["sample_cross_page_split.pdf", "sample_clean_exam.pdf"]:
+                fpath = f"sample_data/{filename}"
+                if os.path.exists(fpath):
+                    doc = Document(
+                        user_id=user.id,
+                        original_filename=filename,
+                        stored_filename=filename,
+                        file_path=fpath,
+                        file_size_bytes=os.path.getsize(fpath),
+                        mime_type="application/pdf",
+                        document_type=DocumentType.PDF,
+                        document_role=DocumentRole.QUESTION_PAPER,
+                        status=DocumentStatus.PENDING,
+                        progress_percent=0
+                    )
+                    db.add(doc)
+                    db.commit()
+                    db.refresh(doc)
+                    await question_service.process_document_pipeline(db, doc.id)
+    except Exception as exc:
+        print("Startup seeding notice:", exc)
+    finally:
+        db.close()
     yield
 
 app = FastAPI(
